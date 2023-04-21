@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+@import './normalize.css';
+@import './components/board/board', './components/key/key';
+
+.root {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+  background: rgb(104, 46, 130);
+  background: radial-gradient(circle, rgba(104, 46, 130, 1) 0%, rgba(33, 26, 94, 1) 100%);
+
+  font-family: 'Playfair Display', serif;
+  color: #fff;
+
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
+}
+
+.backgroundVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.app__block {
+  display: flex;
+  flex: 1 1 50%;
+
+  z-index: 1;
+}
+
+.app__block_up {
+  flex-direction: column;
+  align-items: center;
+
+  gap: 3vh;
+}
+
+.textArea_label {
+  padding-top: 3vh;
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+  text-shadow: 3px 2px 3px rgba(85, 101, 136, 0.575);
+}
+
+.textArea {
+  width: 90%;
+  max-width: 700px;
+  resize: none;
+
+  padding: 10px;
+
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+  border: 2px solid #69759b7a;
+  border-radius: 0px;
+
+  background-color: #69759b7a;
+  backdrop-filter: blur(5px);
+
+  transition: all 300ms ease-in-out;
+
+  &:focus,
+  &:focus-visible {
+    border: 2px solid #69759b7a;
+    border-radius: 20px;
+
+    background-color: #9daacae7;
+
+    outline: none;
+  }
+}
