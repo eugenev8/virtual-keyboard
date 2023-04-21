@@ -420,6 +420,57 @@ export default class View extends DOMUtils {
       },
 
     ];
+    this.keysForTextarea = [
+      'Enter',
+      'Tab',
+      'Space',
+      'Backquote',
+      'Digit1',
+      'Digit2',
+      'Digit3',
+      'Digit4',
+      'Digit5',
+      'Digit6',
+      'Digit7',
+      'Digit8',
+      'Digit9',
+      'Digit0',
+      'Minus',
+      'Equal',
+      'KeyQ',
+      'KeyW',
+      'KeyE',
+      'KeyR',
+      'KeyT',
+      'KeyY',
+      'KeyU',
+      'KeyI',
+      'KeyO',
+      'KeyP',
+      'BracketLeft',
+      'BracketRight',
+      'KeyA',
+      'KeyS',
+      'KeyD',
+      'KeyF',
+      'KeyG',
+      'KeyH',
+      'KeyJ',
+      'KeyK',
+      'KeyL',
+      'Semicolon',
+      'Quote',
+      'KeyZ',
+      'KeyX',
+      'KeyC',
+      'KeyV',
+      'KeyB',
+      'KeyN',
+      'KeyM',
+      'Comma',
+      'Period',
+      'Slash',
+    ];
     this.app = DOMUtils.createElement('div', 'root');
     const backgroundVideo = DOMUtils.createElement('video', 'backgroundVideo');
     backgroundVideo.autoplay = true;
@@ -432,8 +483,7 @@ export default class View extends DOMUtils {
     const upperHalf = DOMUtils.createElement('div', 'app__block app__block_up');
     // The textarea
     this.textArea = DOMUtils.createElement('textarea', 'textArea');
-    this.textArea.readOnly = true;
-    this.textArea.rows = 15;
+    this.textArea.rows = 10;
     this.textArea.cols = 30;
     this.textArea.id = 'TextArea';
     this.label = DOMUtils.createElement('label', 'textArea_label');
@@ -470,7 +520,7 @@ export default class View extends DOMUtils {
   handleKeyPress(event, lang) {
     this.board.handleKeyPress(event, lang);
     this.board.allKeys.forEach((e) => {
-      if (e.code === event.code) {
+      if (e.code === event.code || e.code === event.target.code) {
         this.handleTextArea(e.innerText, event);
       }
     });
@@ -487,10 +537,12 @@ export default class View extends DOMUtils {
         this.board.handleClick(event);
       }
     });
-    this.board.boardDOM.addEventListener('mouseleave', (event) => {
-      if (event.target) {
-        this.board.handleClick(event);
-      }
+    this.board.allKeys.forEach((elem) => {
+      elem.addEventListener('mouseleave', (event) => {
+        if (event.target) {
+          this.board.handleClick(event);
+        }
+      });
     });
     this.board.boardDOM.addEventListener('click', (event) => {
       if (event.target) {
@@ -500,8 +552,119 @@ export default class View extends DOMUtils {
   }
 
   handleTextArea(key, event) {
-    this.textArea.focus();
-    console.log(key);
-    console.log(event);
+    if (event.ctrlKey || event.metaKey) {
+      return 1;
+    }
+    if (event.type === 'keydown' || event.type === 'click') {
+      this.textArea.focus();
+      this.checkForAdding(key, event);
+      this.checkForRemoval(event);
+      this.checkForArrows(event);
+    }
+    return 0;
+  }
+
+  checkForAdding(key, event) {
+    const code = event.code || event.target.code;
+    if (this.keysForTextarea.includes(code)) {
+      let insertion = key;
+      if (code === 'Space') {
+        insertion = ' ';
+      }
+      if (code === 'Tab') {
+        insertion = '   ';
+      }
+      if (code === 'Enter') {
+        insertion = '\n';
+      }
+      const cursorStart = this.textArea.selectionStart;
+      const cursorEnd = this.textArea.selectionEnd;
+      if (!this.textArea.value) {
+        this.textArea.value += insertion;
+      } else {
+        const stringArr = this.textArea.value.split('');
+        stringArr.splice(cursorStart, cursorEnd - cursorStart, insertion);
+        this.textArea.value = stringArr.join('');
+        if (code === 'Tab') {
+          this.textArea.selectionStart = cursorStart + 3;
+          this.textArea.selectionEnd = cursorStart + 3;
+        } else {
+          this.textArea.selectionStart = cursorStart + 1;
+          this.textArea.selectionEnd = cursorStart + 1;
+        }
+      }
+      return 0;
+    }
+    return 1;
+  }
+
+  checkForRemoval(event) {
+    const code = event.code || event.target.code;
+    if (code === 'Delete') {
+      const cursorStart = this.textArea.selectionStart;
+      const cursorEnd = this.textArea.selectionEnd;
+      const stringArr = this.textArea.value.split('');
+      stringArr.splice(cursorStart, cursorEnd - cursorStart === 0 ? 1 : cursorEnd - cursorStart);
+      this.textArea.value = stringArr.join('');
+      this.textArea.selectionStart = cursorStart;
+      this.textArea.selectionEnd = cursorStart;
+    }
+    if (code === 'Backspace') {
+      const cursorStart = this.textArea.selectionStart;
+      const cursorEnd = this.textArea.selectionEnd;
+      if (cursorStart === 0 && cursorEnd === 0) {
+        return 1;
+      }
+      const stringArr = this.textArea.value.split('');
+      const diff = cursorEnd - cursorStart;
+      stringArr.splice(
+        diff === 0 ? cursorStart - 1 : cursorStart,
+        diff === 0
+          ? 1 : diff,
+      );
+      this.textArea.value = stringArr.join('');
+      if (diff > 0) {
+        this.textArea.selectionStart = cursorStart;
+        this.textArea.selectionEnd = cursorStart;
+      } else {
+        this.textArea.selectionStart = cursorStart - 1;
+        this.textArea.selectionEnd = cursorStart - 1;
+      }
+      return 0;
+    }
+    return 1;
+  }
+
+  checkForArrows(event) {
+    const code = event.code || event.target.code;
+    if (code === 'ArrowLeft') {
+      if (this.textArea.selectionStart === 0) {
+        return 1;
+      }
+      this.textArea.selectionStart -= 1;
+      this.textArea.selectionEnd -= 1;
+      return 0;
+    }
+    if (code === 'ArrowRight') {
+      this.textArea.selectionStart += 1;
+      return 0;
+    }
+    if (code === 'ArrowUp') {
+      if (this.textArea.selectionStart >= 5) {
+        this.textArea.selectionStart -= 5;
+        this.textArea.selectionEnd -= 5;
+      } else {
+        this.textArea.selectionStart = 0;
+        this.textArea.selectionEnd = 0;
+      }
+      return 0;
+    }
+    if (code === 'ArrowDown') {
+      this.textArea.selectionStart += 5;
+      // this.textArea.selectionStart = this.textArea.textLength;
+      // this.textArea.selectionEnd = this.textArea.textLength;
+      return 0;
+    }
+    return 1;
   }
 }

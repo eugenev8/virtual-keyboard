@@ -76,7 +76,7 @@ export default class Board extends DOMUtils {
     this.allKeys.forEach((elem) => {
       if (elem.code === event.code || elem.code === event.target.code) {
         if (event.type === 'keydown' || event.type === 'mousedown') { elem.setActiveState(); } else { elem.setDefaultState(); }
-      } else if ((event.type === 'keyup' || event.type === 'mouseup') && !elem.isPressed) elem.setDefaultState();
+      } else if ((event.type === 'keyup' || event.type === 'mouseup' || event.type === 'mouseleave') && !elem.isPressed) elem.setDefaultState();
     });
   }
 
@@ -87,10 +87,13 @@ export default class Board extends DOMUtils {
   }
 
   handleCaps(event, lang) {
-    this.isCapsLocked = !this.isCapsLocked;
-    this.lettersArray.forEach((elem) => {
-      elem.toggleCaps(null, this.isCapsLocked, lang);
-    });
-    this.allKeys.find((elem) => elem.code === event.code).toggleCaps('CapsBtn');
+    const code = event.code || event.target.code;
+    if (event.type === 'click' || event.type === 'keydown') {
+      this.isCapsLocked = !this.isCapsLocked;
+      this.lettersArray.forEach((elem) => {
+        elem.toggleCaps(null, this.isCapsLocked, lang);
+      });
+      this.allKeys.find((elem) => elem.code === code).toggleCaps('CapsBtn');
+    }
   }
 }

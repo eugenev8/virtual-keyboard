@@ -40,7 +40,7 @@ export default class Key extends HTMLElement {
             this.Unshift(lang);
           } else this.activateShift(lang);
         } else this.activateShift(lang);
-      } else if (event.type === 'keyup' || event.type === 'mouseup') {
+      } else if (event.type === 'keyup' || event.type === 'mouseup' || event.type === 'mouseleave') {
         if (isCaps) {
           if (!this.isShifted) {
             this.activateShift(lang);

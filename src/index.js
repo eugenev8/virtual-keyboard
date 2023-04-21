@@ -23,3 +23,9 @@ document.addEventListener('keyup', (event) => {
   app.handleEvent(event, app.model.currentLanguage);
   return 0;
 });
+app.view.board.boardDOM.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  app.handleEvent(event, app.model.currentLanguage);
+  return 0;
+});

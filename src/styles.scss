@@ -65,23 +65,44 @@
 
   padding: 10px;
 
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-
   border: 2px solid #69759b7a;
   border-radius: 0px;
 
-  background-color: #69759b7a;
+  background-color: #474f697a;
   backdrop-filter: blur(5px);
 
   transition: all 300ms ease-in-out;
 
+  font-size: 1.3rem;
+  color: #e7f2ff;
+
   &:focus,
   &:focus-visible {
     border: 2px solid #69759b7a;
-    border-radius: 20px;
+    border-radius: 0px;
 
-    background-color: #9daacae7;
+    background-color: #c9d7fae7;
 
     outline: none;
+    color: #060f1b;
+  }
+
+  /* Works on Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: blue orange;
+
+  /* Works on Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(133, 133, 148, 0.658);
+    border-radius: 20px;
+    border: 1px solid rgb(103, 93, 189);
   }
 }
