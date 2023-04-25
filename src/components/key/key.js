@@ -32,16 +32,20 @@ export default class Key extends HTMLElement {
     return 1;
   }
 
-  handleShift(event, lang, isCaps) {
+  handleShift(event, lang, isCapsLocked) {
     if (this.keyEnShift && !event.repeat) {
       if (event.type === 'keydown' || event.type === 'mousedown') {
-        if (isCaps) {
+        if (isCapsLocked) {
           if (this.isShifted) {
             this.Unshift(lang);
-          } else this.activateShift(lang);
-        } else this.activateShift(lang);
+          } else if (!this.isShifted) {
+            this.activateShift(lang);
+          }
+        } else if (!isCapsLocked) {
+          this.activateShift(lang);
+        }
       } else if (event.type === 'keyup' || event.type === 'mouseup' || event.type === 'mouseleave') {
-        if (isCaps) {
+        if (isCapsLocked) {
           if (!this.isShifted) {
             this.activateShift(lang);
           } else this.Unshift(lang);
@@ -51,14 +55,24 @@ export default class Key extends HTMLElement {
     return 0;
   }
 
-  toggleCaps(isCapsLock, isCapsLocked, lang) {
-    if (isCapsLock === 'CapsBtn') {
+  toggleCaps(isCapsLockBtn, isCapsLocked, lang) {
+    if (isCapsLockBtn === 'CapsBtn') {
       this.classList.toggle('key_active');
     }
     if (this.keyEnShift) {
       if (isCapsLocked) {
-        this.activateShift(lang);
-      } else this.Unshift(lang);
+        if (this.isShifted) {
+          this.Unshift(lang);
+        } else if (!this.isShifted) {
+          this.activateShift(lang);
+        }
+      } else if (!isCapsLocked) {
+        if (this.isShifted) {
+          this.Unshift(lang);
+        } else {
+          this.activateShift(lang);
+        }
+      }
     }
   }
 

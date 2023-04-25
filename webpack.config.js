@@ -22,7 +22,7 @@ module.exports = {
         use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|mp4|webm)$/i,
+        test: /\.(png|svg|jpg|jpeg|gif|mp4|webm|mp3|ogg)$/i,
         type: 'asset/resource',
       },
     ],

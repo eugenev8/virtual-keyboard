@@ -54,7 +54,7 @@ export default class Board extends DOMUtils {
 
   handleKeyPress(event, lang) {
     this.setActiveKey(event);
-    if (event.code === 'CapsLock' && event.type === 'keydown' && event.repeat === false) {
+    if (event.code === 'CapsLock' && event.type === 'keyup') {
       this.handleCaps(event, lang);
     }
     if (event.key === 'Shift') {
@@ -81,6 +81,7 @@ export default class Board extends DOMUtils {
   }
 
   handleShift(event, lang) {
+    this.isShifted = !this.isShifted;
     this.allKeys.forEach((elem) => {
       elem.handleShift(event, lang, this.isCapsLocked);
     });
@@ -88,7 +89,7 @@ export default class Board extends DOMUtils {
 
   handleCaps(event, lang) {
     const code = event.code || event.target.code;
-    if (event.type === 'click' || event.type === 'keydown') {
+    if (event.type === 'click' || event.type === 'keyup') {
       this.isCapsLocked = !this.isCapsLocked;
       this.lettersArray.forEach((elem) => {
         elem.toggleCaps(null, this.isCapsLocked, lang);

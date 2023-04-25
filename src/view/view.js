@@ -1,9 +1,11 @@
 import Key from '../components/key/key';
 import Board from '../components/board/board';
 import DOMUtils from '../components/DOM_Utils';
-
 import videoMp4 from '../assets/rain_mp4.mp4';
 import videoWebm from '../assets/rain_webm.webm';
+import rainSound from '../assets/sound_rain.mp3';
+import keyboardSound1 from '../assets/sound_keyboard1.mp3';
+import keyboardSound2 from '../assets/sound_keyboard2.mp3';
 
 export default class View extends DOMUtils {
   constructor() {
@@ -472,23 +474,11 @@ export default class View extends DOMUtils {
       'Slash',
     ];
     this.app = DOMUtils.createElement('div', 'root');
-    const backgroundVideo = DOMUtils.createElement('video', 'backgroundVideo');
-    backgroundVideo.autoplay = true;
-    backgroundVideo.loop = true;
-    backgroundVideo.muted = true;
-    backgroundVideo.playsinline = true;
-    backgroundVideo.innerHTML = `<source src=${videoWebm} type="video/webm">
-    <source src=${videoMp4} type="video/mp4">`;
+    this.addBackground();
 
     const upperHalf = DOMUtils.createElement('div', 'app__block app__block_up');
     // The textarea
-    this.textArea = DOMUtils.createElement('textarea', 'textArea');
-    this.textArea.rows = 10;
-    this.textArea.cols = 30;
-    this.textArea.id = 'TextArea';
-    this.label = DOMUtils.createElement('label', 'textArea_label');
-    this.label.setAttribute('for', 'TextArea');
-    this.label.innerText = 'Tell us your story:';
+    this.addTextarea();
     upperHalf.append(this.label, this.textArea);
 
     const lowerHalf = DOMUtils.createElement('div', 'app__block app__block_down');
@@ -497,8 +487,156 @@ export default class View extends DOMUtils {
     this.addClickListener();
     lowerHalf.append(this.board.returnBoard());
 
-    this.app.append(backgroundVideo, upperHalf, lowerHalf);
+    // Notification
+    this.addNotification();
+
+    // Menu
+    this.addMenu();
+    this.addSounds();
+
+    this.app.append(this.backgroundVideo, upperHalf, lowerHalf, this.notification);
+    this.app.append(this.menu, this.menuBtn);
     document.querySelector('body').appendChild(this.app);
+  }
+
+  addTextarea() {
+    this.textArea = DOMUtils.createElement('textarea', 'textArea');
+    this.textArea.rows = 10;
+    this.textArea.cols = 30;
+    this.textArea.id = 'TextArea';
+    this.label = DOMUtils.createElement('label', 'textArea_label');
+    this.label.setAttribute('for', 'TextArea');
+    this.label.innerText = 'Tell us your story:';
+  }
+
+  addSounds() {
+    this.rainSound = new Audio(rainSound);
+    this.rainSound.loop = true;
+
+    this.keyboardSound1 = new Audio(keyboardSound1);
+    this.keyboardSound2 = new Audio(keyboardSound2);
+
+    this.setVolume(0);
+  }
+
+  addBackground() {
+    this.backgroundVideo = DOMUtils.createElement('video', 'backgroundVideo');
+    this.backgroundVideo.autoplay = true;
+    this.backgroundVideo.loop = true;
+    this.backgroundVideo.muted = true;
+    this.backgroundVideo.playsinline = true;
+    this.backgroundVideo.innerHTML = `<source src=${videoWebm} type="video/webm">
+    <source src=${videoMp4} type="video/mp4">`;
+    this.isBackgroundActive = true;
+  }
+
+  enableRainSound() {
+    if (this.btnToggleBackground_switch.checked) {
+      this.rainSound.muted = false;
+      this.rainSound.play();
+    }
+  }
+
+  disableRainSound() {
+    this.rainSound.muted = true;
+    this.rainSound.pause();
+  }
+
+  addNotification() {
+    this.notification = DOMUtils.createElement('div', 'notification');
+    this.description = DOMUtils.createElement('div', 'notification__description');
+    this.description.innerHTML = 'Created in Windows. <br> Language toggle is in menu to the right, as well as others options.';
+    this.agreeBtn = DOMUtils.createElement('button', 'notification__button');
+    this.agreeBtn.innerText = 'Understood';
+    this.agreeBtn.addEventListener('click', () => {
+      this.setVolume(0.5);
+      this.notification.style.transform = 'translateY(120%)';
+      setTimeout(() => {
+        this.notification.remove();
+      }, 300);
+    });
+    this.notification.append(this.description, this.agreeBtn);
+  }
+
+  addMenu() {
+    this.menu = DOMUtils.createElement('div', 'menu');
+    this.menuBtn = DOMUtils.createElement('button', 'menu__button');
+    this.menuBtn.innerHTML = `
+    <svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 297 297" xml:space="preserve">
+    <g>
+    <g>
+    <g>
+    <path d="M279.368,24.726H102.992c-9.722,0-17.632,7.91-17.632,17.632V67.92c0,9.722,7.91,17.632,17.632,17.632h176.376
+    c9.722,0,17.632-7.91,17.632-17.632V42.358C297,32.636,289.09,24.726,279.368,24.726z"/>
+    <path d="M279.368,118.087H102.992c-9.722,0-17.632,7.91-17.632,17.632v25.562c0,9.722,7.91,17.632,17.632,17.632h176.376
+    c9.722,0,17.632-7.91,17.632-17.632v-25.562C297,125.997,289.09,118.087,279.368,118.087z"/>
+    <path d="M279.368,211.448H102.992c-9.722,0-17.632,7.91-17.632,17.633v25.561c0,9.722,7.91,17.632,17.632,17.632h176.376
+    c9.722,0,17.632-7.91,17.632-17.632v-25.561C297,219.358,289.09,211.448,279.368,211.448z"/>
+    <path d="M45.965,24.726H17.632C7.91,24.726,0,32.636,0,42.358V67.92c0,9.722,7.91,17.632,17.632,17.632h28.333
+    c9.722,0,17.632-7.91,17.632-17.632V42.358C63.597,32.636,55.687,24.726,45.965,24.726z"/>
+    <path d="M45.965,118.087H17.632C7.91,118.087,0,125.997,0,135.719v25.562c0,9.722,7.91,17.632,17.632,17.632h28.333
+    c9.722,0,17.632-7.91,17.632-17.632v-25.562C63.597,125.997,55.687,118.087,45.965,118.087z"/>
+    <path d="M45.965,211.448H17.632C7.91,211.448,0,219.358,0,229.081v25.561c0,9.722,7.91,17.632,17.632,17.632h28.333
+    c9.722,0,17.632-7.91,17.632-17.632v-25.561C63.597,219.358,55.687,211.448,45.965,211.448z"/>
+    </g>
+    </g>
+    </g>
+    </svg>`;
+    this.menuBtn.addEventListener('click', () => {
+      this.menu.classList.toggle('isToggled');
+    });
+    // Sound toggle
+    const btnToggleSound = DOMUtils.createElement('div', 'menu__item menu__soundToggle');
+    this.btnToggleSound_range = DOMUtils.createElement('input', 'menu__soundRange');
+    this.btnToggleSound_range.setAttribute('type', 'range');
+    this.btnToggleSound_range.id = 'SoundVolume';
+    this.btnToggleSound_range.min = 0;
+    this.btnToggleSound_range.max = 1;
+    this.btnToggleSound_range.step = 0.01;
+    this.labelForSound = DOMUtils.createElement('label', 'menu__label');
+    this.labelForSound.innerText = 'Sound volume:';
+    this.labelForSound.setAttribute('for', 'SoundVolume');
+    btnToggleSound.append(this.labelForSound, this.btnToggleSound_range);
+    this.menu.appendChild(btnToggleSound);
+    // Language toggle
+    const btnToggleLanguage = DOMUtils.createElement('div', 'menu__item menu__language');
+    this.btnToggleLanguage_switch = DOMUtils.createElement('input', 'menu__language');
+    this.btnToggleLanguage_switch.setAttribute('type', 'checkbox');
+    this.btnToggleLanguage_switch.id = 'Language';
+    this.btnToggleLanguage_switch.checked = true;
+    this.labelForLanguage = DOMUtils.createElement('label', 'menu__label');
+    this.labelForLanguage.innerText = 'Language:';
+    this.labelForLanguage.setAttribute('for', 'Language');
+    btnToggleLanguage.append(this.labelForLanguage, this.btnToggleLanguage_switch);
+    this.menu.appendChild(btnToggleLanguage);
+    // Background toggle
+    const btnToggleBackground = DOMUtils.createElement('div', 'menu__item menu__language');
+    this.btnToggleBackground_switch = DOMUtils.createElement('input', 'menu__background');
+    this.btnToggleBackground_switch.setAttribute('type', 'checkbox');
+    this.btnToggleBackground_switch.checked = true;
+    this.btnToggleBackground_switch.id = 'Background';
+    this.labelForBackground = DOMUtils.createElement('label', 'menu__label');
+    this.labelForBackground.innerText = 'Background video:';
+    this.labelForBackground.setAttribute('for', 'Background');
+    btnToggleBackground.append(this.labelForBackground, this.btnToggleBackground_switch);
+    this.btnToggleBackground_switch.addEventListener('input', () => {
+      this.isBackgroundActive = !this.isBackgroundActive;
+      this.toggleBackground();
+    });
+
+    this.menu.appendChild(btnToggleBackground);
+  }
+
+  toggleBackground() {
+    if (this.isBackgroundActive) {
+      this.app.appendChild(this.backgroundVideo);
+      this.backgroundVideo.play();
+      this.btnToggleBackground_switch.checked = true;
+    } else {
+      this.backgroundVideo.remove();
+      this.disableRainSound();
+      this.btnToggleBackground_switch.checked = false;
+    }
   }
 
   addKey(key) {
@@ -510,15 +648,28 @@ export default class View extends DOMUtils {
   toggleLanguage(lang) {
     if (lang === 'ru') {
       this.label.innerText = 'Расскажите свою историю:';
+      this.labelForSound.innerText = 'Громкость звуков:';
+      this.labelForLanguage.innerText = 'Язык:';
+      this.labelForBackground.innerText = 'Видео на фоне:';
+      this.description.innerHTML = 'Создано в Windows.<br>Переключение языка находится в меню справа, как и другие опции.';
+      this.btnToggleLanguage_switch.checked = false;
       this.board.setRuLanguage();
     } else {
       this.label.innerText = 'Tell us your story:';
+      this.labelForSound.innerText = 'Sound volume:';
+      this.labelForLanguage.innerText = 'Language:';
+      this.labelForBackground.innerText = 'Background video:';
+      this.description.innerHTML = 'Created in Windows.<br>The language switch is in the right-hand menu, as are the other options.';
+      this.btnToggleLanguage_switch.checked = true;
       this.board.setEnLanguage();
     }
   }
 
   handleKeyPress(event, lang) {
-    this.board.handleKeyPress(event, lang);
+    if (!event.repeat) {
+      this.board.handleKeyPress(event, lang);
+    }
+    this.playPressSound(event);
     this.board.allKeys.forEach((e) => {
       if (e.code === event.code || e.code === event.target.code) {
         this.handleTextArea(e.innerText, event);
@@ -549,6 +700,59 @@ export default class View extends DOMUtils {
         this.board.handleClick(event);
       }
     });
+  }
+
+  playPressSound(event) {
+    if (this.keyboardSound1.muted) {
+      return 1;
+    }
+    if (event.code === 'CapsLock') {
+      if (event.type === 'keyup') {
+        this.keyboardSound2.currentTime = 0;
+        this.keyboardSound2.play();
+        return 0;
+      }
+      return 1;
+    }
+    if (event.type === 'keydown' || event.type === 'click') {
+      if (!this.keysForTextarea.includes(event.code)) {
+        if (event.repeat) {
+          return 0;
+        }
+        this.keyboardSound2.currentTime = 0;
+        this.keyboardSound2.play();
+        return 1;
+      }
+      if (event.repeat) {
+        this.keyboardSound1.currentTime = 0;
+        this.keyboardSound1.play();
+        return 0;
+      }
+      if (!event.repeat) {
+        this.keyboardSound2.currentTime = 0;
+        this.keyboardSound2.play();
+      }
+      return 0;
+    }
+    return 0;
+  }
+
+  setVolume(volume) {
+    if (volume === 0) {
+      this.btnToggleSound_range.classList.add('isMuted');
+      this.keyboardSound1.muted = true;
+      this.keyboardSound2.muted = true;
+      this.disableRainSound();
+    } else {
+      this.btnToggleSound_range.classList.remove('isMuted');
+      this.keyboardSound1.muted = false;
+      this.keyboardSound2.muted = false;
+      this.enableRainSound();
+    }
+    this.rainSound.volume = volume;
+    this.keyboardSound1.volume = volume;
+    this.keyboardSound2.volume = volume;
+    this.btnToggleSound_range.value = volume;
   }
 
   handleTextArea(key, event) {

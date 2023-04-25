@@ -29,3 +29,20 @@ app.view.board.boardDOM.addEventListener('click', (event) => {
   app.handleEvent(event, app.model.currentLanguage);
   return 0;
 });
+app.view.btnToggleSound_range.addEventListener('input', () => {
+  app.setVolume(app.view.btnToggleSound_range.value);
+});
+app.view.btnToggleSound_range.addEventListener('change', () => {
+  app.saveData();
+});
+app.view.btnToggleBackground_switch.addEventListener('change', () => {
+  app.saveData();
+});
+app.view.btnToggleLanguage_switch.addEventListener('change', () => {
+  if (app.view.btnToggleLanguage_switch.checked === true) {
+    app.setLanguage('en');
+  } else {
+    app.setLanguage('ru');
+  }
+  app.saveData();
+});
