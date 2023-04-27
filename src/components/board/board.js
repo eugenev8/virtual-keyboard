@@ -5,6 +5,7 @@ export default class Board extends DOMUtils {
   constructor(allKeys) {
     super();
     this.isCapsLocked = false;
+    this.isKeyboardShifted = false;
     const keys = allKeys;
     this.allKeys = [];
     keys.forEach((element) => {
@@ -67,8 +68,13 @@ export default class Board extends DOMUtils {
     if (event.target.code === 'CapsLock') {
       this.handleCaps(event, lang);
     }
-    if (event.target.code === 'ShiftLeft' || event.target.code === 'ShiftRight') {
-      this.handleShift(event, lang);
+    if ((event.target.code === 'ShiftLeft' || event.target.code === 'ShiftRight') && event.type === 'click') {
+      if (this.allKeys[0].isShifted) {
+        this.isKeyboardShifted = false;
+      } else {
+        this.isKeyboardShifted = true;
+      }
+      this.handleShift(event, lang, this.isKeyboardShifted);
     }
   }
 
@@ -80,10 +86,9 @@ export default class Board extends DOMUtils {
     });
   }
 
-  handleShift(event, lang) {
-    this.isShifted = !this.isShifted;
+  handleShift(event, lang, isKeyboardShifted) {
     this.allKeys.forEach((elem) => {
-      elem.handleShift(event, lang, this.isCapsLocked);
+      elem.handleShift(event, lang, this.isCapsLocked, isKeyboardShifted);
     });
   }
 

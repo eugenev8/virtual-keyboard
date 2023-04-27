@@ -32,9 +32,9 @@ export default class Key extends HTMLElement {
     return 1;
   }
 
-  handleShift(event, lang, isCapsLocked) {
+  handleShift(event, lang, isCapsLocked, isKeyboardShifted) {
     if (this.keyEnShift && !event.repeat) {
-      if (event.type === 'keydown' || event.type === 'mousedown') {
+      if (event.type === 'keydown') {
         if (isCapsLocked) {
           if (this.isShifted) {
             this.Unshift(lang);
@@ -46,6 +46,22 @@ export default class Key extends HTMLElement {
         }
       } else if (event.type === 'keyup' || event.type === 'mouseup' || event.type === 'mouseleave') {
         if (isCapsLocked) {
+          if (!this.isShifted) {
+            this.activateShift(lang);
+          } else if (this.isShifted) { this.Unshift(lang); }
+        } else if (!isCapsLocked) { this.Unshift(lang); }
+      } else if (event.type === 'click') {
+        if (isKeyboardShifted) {
+          if (isCapsLocked) {
+            if (this.isShifted) {
+              this.Unshift(lang);
+            } else if (!this.isShifted) {
+              this.activateShift(lang);
+            }
+          } else if (!isCapsLocked) {
+            this.activateShift(lang);
+          }
+        } else if (isCapsLocked) {
           if (!this.isShifted) {
             this.activateShift(lang);
           } else this.Unshift(lang);

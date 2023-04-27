@@ -472,6 +472,7 @@ export default class View extends DOMUtils {
       'Comma',
       'Period',
       'Slash',
+      'Backslash',
     ];
     this.app = DOMUtils.createElement('div', 'root');
     this.addBackground();
@@ -484,7 +485,6 @@ export default class View extends DOMUtils {
     const lowerHalf = DOMUtils.createElement('div', 'app__block app__block_down');
     // The Keyboard
     this.board = new Board(this.allKeysObjects);
-    this.addClickListener();
     lowerHalf.append(this.board.returnBoard());
 
     // Notification
@@ -527,7 +527,29 @@ export default class View extends DOMUtils {
     this.backgroundVideo.playsinline = true;
     this.backgroundVideo.innerHTML = `<source src=${videoWebm} type="video/webm">
     <source src=${videoMp4} type="video/mp4">`;
-    this.isBackgroundActive = true;
+    if (document.hidden) {
+      this.isBackgroundActive = false;
+    } else {
+      this.isBackgroundActive = true;
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (!this.isBackgroundActive) {
+          return 1;
+        }
+        this.isBackgroundActive = false;
+        this.isBackgroundForceClosed = true;
+      } else {
+        if (!this.isBackgroundForceClosed) {
+          return 1;
+        }
+        this.isBackgroundActive = true;
+        this.isBackgroundForceClosed = false;
+      }
+      this.toggleBackground();
+      return 0;
+    });
   }
 
   enableRainSound() {
@@ -545,9 +567,7 @@ export default class View extends DOMUtils {
   addNotification() {
     this.notification = DOMUtils.createElement('div', 'notification');
     this.description = DOMUtils.createElement('div', 'notification__description');
-    this.description.innerHTML = 'Created in Windows. <br> Language toggle is in menu to the right, as well as others options.';
     this.agreeBtn = DOMUtils.createElement('button', 'notification__button');
-    this.agreeBtn.innerText = 'Understood';
     this.agreeBtn.addEventListener('click', () => {
       this.setVolume(0.5);
       this.notification.style.transform = 'translateY(120%)';
@@ -632,6 +652,7 @@ export default class View extends DOMUtils {
       this.app.appendChild(this.backgroundVideo);
       this.backgroundVideo.play();
       this.btnToggleBackground_switch.checked = true;
+      this.setVolume(this.keyboardSound1.volume);
     } else {
       this.backgroundVideo.remove();
       this.disableRainSound();
@@ -651,7 +672,8 @@ export default class View extends DOMUtils {
       this.labelForSound.innerText = 'Громкость звуков:';
       this.labelForLanguage.innerText = 'Язык:';
       this.labelForBackground.innerText = 'Видео на фоне:';
-      this.description.innerHTML = 'Создано в Windows.<br>Переключение языка находится в меню справа, как и другие опции.';
+      this.description.innerHTML = 'Создано в Windows.<br>Переключить язык можно в меню справа вверху, либо комбинацией "ctrl + alt".';
+      this.agreeBtn.innerHTML = 'Понятно';
       this.btnToggleLanguage_switch.checked = false;
       this.board.setRuLanguage();
     } else {
@@ -659,7 +681,8 @@ export default class View extends DOMUtils {
       this.labelForSound.innerText = 'Sound volume:';
       this.labelForLanguage.innerText = 'Language:';
       this.labelForBackground.innerText = 'Background video:';
-      this.description.innerHTML = 'Created in Windows.<br>The language switch is in the right-hand menu, as are the other options.';
+      this.description.innerHTML = 'Created in Windows.<br>You can switch the language in the top right menu, or by pressing "ctrl + alt".';
+      this.agreeBtn.innerHTML = 'Understood';
       this.btnToggleLanguage_switch.checked = true;
       this.board.setEnLanguage();
     }
@@ -677,27 +700,27 @@ export default class View extends DOMUtils {
     });
   }
 
-  addClickListener() {
+  addClickListener(lang) {
     this.board.boardDOM.addEventListener('mousedown', (event) => {
       if (event.target) {
-        this.board.handleClick(event);
+        this.board.handleClick(event, lang);
       }
     });
     this.board.boardDOM.addEventListener('mouseup', (event) => {
       if (event.target) {
-        this.board.handleClick(event);
+        this.board.handleClick(event, lang);
       }
     });
     this.board.allKeys.forEach((elem) => {
       elem.addEventListener('mouseleave', (event) => {
         if (event.target) {
-          this.board.handleClick(event);
+          this.board.handleClick(event, lang);
         }
       });
     });
     this.board.boardDOM.addEventListener('click', (event) => {
       if (event.target) {
-        this.board.handleClick(event);
+        this.board.handleClick(event, lang);
       }
     });
   }
@@ -760,10 +783,11 @@ export default class View extends DOMUtils {
       return 1;
     }
     if (event.type === 'keydown' || event.type === 'click') {
-      this.textArea.focus();
       this.checkForAdding(key, event);
       this.checkForRemoval(event);
       this.checkForArrows(event);
+      this.textArea.blur();
+      this.textArea.focus();
     }
     return 0;
   }
@@ -865,8 +889,6 @@ export default class View extends DOMUtils {
     }
     if (code === 'ArrowDown') {
       this.textArea.selectionStart += 5;
-      // this.textArea.selectionStart = this.textArea.textLength;
-      // this.textArea.selectionEnd = this.textArea.textLength;
       return 0;
     }
     return 1;

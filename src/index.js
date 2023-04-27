@@ -15,6 +15,14 @@ document.addEventListener('keydown', (event) => {
   event.preventDefault();
   event.stopPropagation();
   app.handleEvent(event, app.model.currentLanguage);
+
+  if ((event.key === 'Alt' && event.ctrlKey) || (event.key === 'Control' && event.altKey)) {
+    if (app.model.currentLanguage === 'ru') {
+      app.setLanguage('en');
+      return 0;
+    }
+    app.setLanguage('ru');
+  }
   return 0;
 });
 document.addEventListener('keyup', (event) => {

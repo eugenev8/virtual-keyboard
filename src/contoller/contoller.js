@@ -5,6 +5,7 @@ export default class Controller {
 
     window.addEventListener('load', () => {
       this.getData();
+      this.view.addClickListener(this.model.currentLanguage);
     });
   }
 
@@ -34,7 +35,11 @@ export default class Controller {
     const data = JSON.parse(localStorage.getItem('e8Keyboard'));
     if (data) {
       this.setLanguage(data.language);
-      this.view.isBackgroundActive = data.background;
+      if (document.hidden) {
+        this.view.isBackgroundActive = false;
+      } else {
+        this.view.isBackgroundActive = data.background;
+      }
       this.view.toggleBackground();
     }
   }

@@ -191,6 +191,34 @@
     padding: 3%;
   }
 
+  #SoundVolume {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 20px;  
+    background-color: #bfc9f7;
+    cursor: pointer;
+    transition: background-color 150ms linear ;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%; 
+      background-color: #604fff;
+
+    }
+    
+    &::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: #604fff;
+    }
+  }
+
   #Language {
     position: relative;
     height: 30px;
