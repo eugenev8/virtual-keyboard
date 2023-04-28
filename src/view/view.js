@@ -625,7 +625,8 @@ export default class View extends DOMUtils {
     this.btnToggleLanguage_switch.id = 'Language';
     this.btnToggleLanguage_switch.checked = true;
     this.labelForLanguage = DOMUtils.createElement('label', 'menu__label');
-    this.labelForLanguage.innerText = 'Language:';
+    this.labelForLanguage.id = 'Label-language';
+    this.labelForLanguage.innerText = 'Сменить язык /  Change language';
     this.labelForLanguage.setAttribute('for', 'Language');
     btnToggleLanguage.append(this.labelForLanguage, this.btnToggleLanguage_switch);
     this.menu.appendChild(btnToggleLanguage);
@@ -670,7 +671,6 @@ export default class View extends DOMUtils {
     if (lang === 'ru') {
       this.label.innerText = 'Расскажите свою историю:';
       this.labelForSound.innerText = 'Громкость звуков:';
-      this.labelForLanguage.innerText = 'Язык:';
       this.labelForBackground.innerText = 'Видео на фоне:';
       this.description.innerHTML = 'Создано в Windows.<br>Переключить язык можно в меню справа вверху, либо комбинацией "ctrl + alt".';
       this.agreeBtn.innerHTML = 'Понятно';
@@ -679,7 +679,6 @@ export default class View extends DOMUtils {
     } else {
       this.label.innerText = 'Tell us your story:';
       this.labelForSound.innerText = 'Sound volume:';
-      this.labelForLanguage.innerText = 'Language:';
       this.labelForBackground.innerText = 'Background video:';
       this.description.innerHTML = 'Created in Windows.<br>You can switch the language in the top right menu, or by pressing "ctrl + alt".';
       this.agreeBtn.innerHTML = 'Understood';
@@ -692,36 +691,40 @@ export default class View extends DOMUtils {
     if (!event.repeat) {
       this.board.handleKeyPress(event, lang);
     }
+    if (event.type === 'click' && event.target.matches('.keyboard')) {
+      return 1;
+    }
     this.playPressSound(event);
     this.board.allKeys.forEach((e) => {
       if (e.code === event.code || e.code === event.target.code) {
         this.handleTextArea(e.innerText, event);
       }
     });
+    return 0;
   }
 
   addClickListener(lang) {
-    this.board.boardDOM.addEventListener('mousedown', (event) => {
-      if (event.target) {
-        this.board.handleClick(event, lang);
-      }
-    });
-    this.board.boardDOM.addEventListener('mouseup', (event) => {
-      if (event.target) {
-        this.board.handleClick(event, lang);
-      }
-    });
     this.board.allKeys.forEach((elem) => {
+      elem.addEventListener('mousedown', (event) => {
+        if (event.target) {
+          this.board.handleClick(event, lang);
+        }
+      });
+      elem.addEventListener('mouseup', (event) => {
+        if (event.target) {
+          this.board.handleClick(event, lang);
+        }
+      });
       elem.addEventListener('mouseleave', (event) => {
         if (event.target) {
           this.board.handleClick(event, lang);
         }
       });
-    });
-    this.board.boardDOM.addEventListener('click', (event) => {
-      if (event.target) {
-        this.board.handleClick(event, lang);
-      }
+      elem.addEventListener('click', (event) => {
+        if (event.target) {
+          this.board.handleClick(event, lang);
+        }
+      });
     });
   }
 

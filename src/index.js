@@ -19,9 +19,11 @@ document.addEventListener('keydown', (event) => {
   if ((event.key === 'Alt' && event.ctrlKey) || (event.key === 'Control' && event.altKey)) {
     if (app.model.currentLanguage === 'ru') {
       app.setLanguage('en');
+      app.saveData();
       return 0;
     }
     app.setLanguage('ru');
+    app.saveData();
   }
   return 0;
 });
