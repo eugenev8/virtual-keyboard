@@ -5,7 +5,6 @@ export default class Controller {
 
     window.addEventListener('load', () => {
       this.getData();
-      this.view.addClickListener(this.model.currentLanguage);
     });
   }
 

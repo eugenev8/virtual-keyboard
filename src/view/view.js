@@ -703,31 +703,6 @@ export default class View extends DOMUtils {
     return 0;
   }
 
-  addClickListener(lang) {
-    this.board.allKeys.forEach((elem) => {
-      elem.addEventListener('mousedown', (event) => {
-        if (event.target) {
-          this.board.handleClick(event, lang);
-        }
-      });
-      elem.addEventListener('mouseup', (event) => {
-        if (event.target) {
-          this.board.handleClick(event, lang);
-        }
-      });
-      elem.addEventListener('mouseleave', (event) => {
-        if (event.target) {
-          this.board.handleClick(event, lang);
-        }
-      });
-      elem.addEventListener('click', (event) => {
-        if (event.target) {
-          this.board.handleClick(event, lang);
-        }
-      });
-    });
-  }
-
   playPressSound(event) {
     if (this.keyboardSound1.muted) {
       return 1;

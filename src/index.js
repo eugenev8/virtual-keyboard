@@ -39,6 +39,28 @@ app.view.board.boardDOM.addEventListener('click', (event) => {
   app.handleEvent(event, app.model.currentLanguage);
   return 0;
 });
+app.view.board.allKeys.forEach((element) => {
+  element.addEventListener('mousedown', (event) => {
+    if (event.target) {
+      app.view.board.handleClick(event, app.model.currentLanguage);
+    }
+  });
+  element.addEventListener('mouseup', (event) => {
+    if (event.target) {
+      app.view.board.handleClick(event, app.model.currentLanguage);
+    }
+  });
+  element.addEventListener('mouseleave', (event) => {
+    if (event.target) {
+      app.view.board.handleClick(event, app.model.currentLanguage);
+    }
+  });
+  element.addEventListener('click', (event) => {
+    if (event.target) {
+      app.view.board.handleClick(event, app.model.currentLanguage);
+    }
+  });
+});
 app.view.btnToggleSound_range.addEventListener('input', () => {
   app.setVolume(app.view.btnToggleSound_range.value);
 });
