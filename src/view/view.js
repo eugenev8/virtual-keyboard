@@ -506,7 +506,7 @@ export default class View extends DOMUtils {
     this.textArea.id = 'TextArea';
     this.label = DOMUtils.createElement('label', 'textArea_label');
     this.label.setAttribute('for', 'TextArea');
-    this.label.innerText = 'Tell us your story:';
+    this.label.textContent = 'Tell us your story:';
   }
 
   addSounds() {
@@ -614,7 +614,7 @@ export default class View extends DOMUtils {
     this.btnToggleSound_range.max = 1;
     this.btnToggleSound_range.step = 0.01;
     this.labelForSound = DOMUtils.createElement('label', 'menu__label');
-    this.labelForSound.innerText = 'Sound volume:';
+    this.labelForSound.textContent = 'Sound volume:';
     this.labelForSound.setAttribute('for', 'SoundVolume');
     btnToggleSound.append(this.labelForSound, this.btnToggleSound_range);
     this.menu.appendChild(btnToggleSound);
@@ -626,7 +626,7 @@ export default class View extends DOMUtils {
     this.btnToggleLanguage_switch.checked = true;
     this.labelForLanguage = DOMUtils.createElement('label', 'menu__label');
     this.labelForLanguage.id = 'Label-language';
-    this.labelForLanguage.innerText = 'Сменить язык /  Change language';
+    this.labelForLanguage.textContent = 'Сменить язык /  Change language';
     this.labelForLanguage.setAttribute('for', 'Language');
     btnToggleLanguage.append(this.labelForLanguage, this.btnToggleLanguage_switch);
     this.menu.appendChild(btnToggleLanguage);
@@ -637,7 +637,7 @@ export default class View extends DOMUtils {
     this.btnToggleBackground_switch.checked = true;
     this.btnToggleBackground_switch.id = 'Background';
     this.labelForBackground = DOMUtils.createElement('label', 'menu__label');
-    this.labelForBackground.innerText = 'Background video:';
+    this.labelForBackground.textContent = 'Background video:';
     this.labelForBackground.setAttribute('for', 'Background');
     btnToggleBackground.append(this.labelForBackground, this.btnToggleBackground_switch);
     this.btnToggleBackground_switch.addEventListener('input', () => {
@@ -669,17 +669,17 @@ export default class View extends DOMUtils {
 
   toggleLanguage(lang) {
     if (lang === 'ru') {
-      this.label.innerText = 'Расскажите свою историю:';
-      this.labelForSound.innerText = 'Громкость звуков:';
-      this.labelForBackground.innerText = 'Видео на фоне:';
+      this.label.textContent = 'Расскажите свою историю:';
+      this.labelForSound.textContent = 'Громкость звуков:';
+      this.labelForBackground.textContent = 'Видео на фоне:';
       this.description.innerHTML = 'Создано в Windows.<br>Переключить язык можно в меню справа вверху, либо комбинацией "ctrl + alt".';
       this.agreeBtn.innerHTML = 'Понятно';
       this.btnToggleLanguage_switch.checked = false;
       this.board.setRuLanguage();
     } else {
-      this.label.innerText = 'Tell us your story:';
-      this.labelForSound.innerText = 'Sound volume:';
-      this.labelForBackground.innerText = 'Background video:';
+      this.label.textContent = 'Tell us your story:';
+      this.labelForSound.textContent = 'Sound volume:';
+      this.labelForBackground.textContent = 'Background video:';
       this.description.innerHTML = 'Created in Windows.<br>You can switch the language in the top right menu, or by pressing "ctrl + alt".';
       this.agreeBtn.innerHTML = 'Understood';
       this.btnToggleLanguage_switch.checked = true;
@@ -697,7 +697,7 @@ export default class View extends DOMUtils {
     this.playPressSound(event);
     this.board.allKeys.forEach((e) => {
       if (e.code === event.code || e.code === event.target.code) {
-        this.handleTextArea(e.innerText, event);
+        this.handleTextArea(e.textContent, event);
       }
     });
     return 0;

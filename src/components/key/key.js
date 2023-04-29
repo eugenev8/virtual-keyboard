@@ -11,11 +11,11 @@ export default class Key extends HTMLElement {
   }
 
   setRuLanguage() {
-    this.innerText = this.keyRu;
+    this.textContent = this.keyRu;
   }
 
   setEnLanguage() {
-    this.innerText = this.keyEn;
+    this.textContent = this.keyEn;
   }
 
   setActiveState() {
@@ -111,19 +111,19 @@ export default class Key extends HTMLElement {
   }
 
   ShiftRu() {
-    this.innerText = this.keyRuShift;
+    this.textContent = this.keyRuShift;
   }
 
   ShiftEn() {
-    this.innerText = this.keyEnShift;
+    this.textContent = this.keyEnShift;
   }
 
   UnshiftRu() {
-    this.innerText = this.keyRu;
+    this.textContent = this.keyRu;
   }
 
   UnshiftEn() {
-    this.innerText = this.keyEn;
+    this.textContent = this.keyEn;
   }
 }
 
